@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MemberDAO">
+
+	<select  id="getMember" resultType="com.javassem.domain.Biz_memberVO"  parameterType="Integer">
+		SELECT * FROM biz_member 
+		where ownernum = #{ownernum}
+	</select>
+
+	<update id="update_sub" parameterType="com.javassem.domain.OwnerVO">
+		<![CDATA[
+		UPDATE ownerInfo SET
+		 ownersub = 1
+		WHERE ownernum = #{ownernum}
+		]]>
+	</update>
+	
+	<select id="select_pay_date_end" parameterType="com.javassem.domain.Payed_listVO" resultType="String">
+		SELECT pay_date_end FROM payed_list
+		where ownernum = #{ownernum}
+	</select>
+
+	<update id="update_coupon_terminated" parameterType="com.javassem.domain.OwnerVO">
+		<![CDATA[
+		UPDATE ownerInfo SET
+		 	ownersub = 0
+		WHERE ownernum = #{ownernum}
+		]]>
+	</update>
+	
+</mapper>

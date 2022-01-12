@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ShopDAO">
+
+<select id="ShopList" resultType="com.javassem.domain.ShopVO"  parameterType="com.javassem.domain.ShopVO">
+		
+			select * From shopInfo si ,board_owner bo 
+			where si.ownernum = bo.ownernum ;
+</select>
+
+<select id="ShopList1" resultType="com.javassem.domain.ShopVO"  parameterType="com.javassem.domain.ShopVO">
+		
+			select * From shopInfo 
+			where ownernum = #{ownernum}  ;
+</select>
+	
+
+	<select id="getShopList" resultType="com.javassem.domain.ShopVO"  parameterType="hashmap">
+		
+		SELECT *
+		FROM board_owner
+		<where>
+			<if test="searchCondition != null">
+				${searchCondition} LIKE '%${searchKeyword}%'
+			</if>
+		</where>		
+	</select> 
+	
+	<select id = "getShop" resultType="com.javassem.domain.ShopVO">
+	<![CDATA[
+		SELECT *
+		FROM board_owner bo, shopInfo si
+		WHERE bo.ownernum = si.ownernum
+		AND bo.board_owner_seq = #{board_owner_seq}
+		]]>
+	
+	</select>
+	
+	
+  	 <insert id="getShop2" parameterType="com.javassem.domain.ShopVO">
+		INSERT INTO support (shopname, normal_emergency, shopaddr, shoppay, jobDate, jobTime_start, jobTime_end, board_owner_seq, userid, shoppn,maching)
+		VALUES (#{shopname}, #{normal_emergency}, #{shopaddr}, #{shoppay}, #{jobDate}, #{jobTime_start}, #{jobTime_end}, #{board_owner_seq}, #{userid}, ${shoppn},"대기 중")
+	</insert> 
+	
+	<select id="getSupport" parameterType="com.javassem.domain.ShopVO" resultType="com.javassem.domain.ShopVO" >
+		<![CDATA[
+			SELECT * FROM support where board_owner_seq = #{board_owner_seq} AND userid = #{userid}
+		]]>
+</select>
+
+	
+	</mapper>
+

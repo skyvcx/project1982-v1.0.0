@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="hold">
+	
+	<!-- 매칭성공률 그래프 -->
+	<select id="matching_percent" resultType="com.javassem.domain.GraphVO">
+		SELECT * FROM matchPercent
+	</select>
+
+	<!-- 재이용률 그래프 -->
+	<select id="reusePercent" resultType="com.javassem.domain.GraphVO">
+	SELECT * from reusing
+	</select>
+	
+	
+	<!-- 회원현황 그래프 -->
+	<select id="join" resultType="com.javassem.domain.GraphVO">
+		select joinDate from joinTable
+	</select>
+	
+	<select id="joinTotal" resultType="int">
+		select count(*) from joinTable
+	</select>
+	
+	<select id="joinDate" resultType="com.javassem.domain.GraphVO">
+	select 
+	(select count(joinDate) from joinTable
+	where date_format(joinDate, '%Y-%m-%d') = date_format(now(), '%Y-%m-%d'))as today,
+	(select count(joinDate) from joinTable 
+	where date_format(joinDate, '%Y-%m-%d') = date_format(now()- INTERVAL 1 DAY, '%Y-%m-%d'))as before1,
+	(select count(joinDate) from joinTable 
+	where date_format(joinDate, '%Y-%m-%d') = date_format(now()- INTERVAL 2 DAY, '%Y-%m-%d'))as before2,
+	(select count(joinDate) from joinTable 
+	where date_format(joinDate, '%Y-%m-%d') = date_format(now()- INTERVAL 3 DAY, '%Y-%m-%d'))as before3,
+	(select count(joinDate) from joinTable 
+	where date_format(joinDate, '%Y-%m-%d') = date_format(now()- INTERVAL 4 DAY, '%Y-%m-%d'))as before4
+	</select>
+
+</mapper>

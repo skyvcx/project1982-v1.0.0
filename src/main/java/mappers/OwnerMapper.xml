@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+
+<mapper namespace="owner">
+
+   <!-- 업자 회원가입 -->
+   <insert id="ownerInsert" parameterType="OwnerVO">
+      INSERT INTO ownerInfo(ownerid, ownerpass, ownername, ownerpn, ownermail, ownerdate, ownersub)
+      VALUES(#{ownerid}, #{ownerpass}, #{ownername}, #{ownerpn}, #{ownermail}, DATE_ADD(now(), INTERVAL '9:30' HOUR_MINUTE) ,0)
+   </insert>
+   
+   <!-- 로그인시 아이디 체크 -->
+   <select id='idCheck' parameterType="OwnerVO" resultType="OwnerVO">
+      SELECT * FROM ownerInfo
+         <where>
+            <if test="ownerid != null">
+               ownerid = #{ownerid}
+            </if>
+            <if test="ownerpass != null">
+               AND ownerpass = #{ownerpass}
+            </if>
+         </where>
+   </select>
+
+   <!-- 구인공고 게시판 데이터 삽입 -->
+   <insert id="ownerBoardInsert" parameterType="com.javassem.domain.OwnerBoardVO">
+      INSERT INTO board_owner(normal_emergency, shopname, shoppay, shopaddr, jobDate, jobTime_start, jobTime_end, need_Num, regDate, ownernum,content,writer)
+      VALUES(#{normal_emergency}, #{shopname}, #{shoppay}, #{shopaddr},#{jobDate}, #{jobTime_start}, #{jobTime_end}, #{need_Num}, DATE_ADD(now(), INTERVAL '9:30' HOUR_MINUTE) , #{ownernum},#{content},1)
+   </insert>
+
+   <!-- 구인공고 게시판 리스트 표기 -->
+   <select id="ownerBoardList" resultType="com.javassem.domain.OwnerBoardVO">
+      <![CDATA[
+         SELECT * FROM ownerInfo oi ,shopInfo si, board_owner bo
+         WHERE oi.ownerNum = si.ownernum 
+         and si.ownernum = bo.ownernum 
+         and oi.ownerNum = bo.ownernum 
+         and oi.ownernum = #{ownernum}
+         and bo.writer = 1
+      ]]>
+   </select>
+   
+   <!-- 공고 취소 누를 때 취소 됨 writer = 0 -->
+	<update id="ownerBoardCancel" parameterType="Integer">
+		update board_owner set writer = 0
+		where board_owner_seq = #{board_seq}
+	</update>
+
+   <!-- 업체 정보 추가 -->
+   <insert id="shopInsert" parameterType="OwnerVO">
+      INSERT INTO shopInfo(shopname, shopaddr, shoppn, shopcontent, shopdate, ownernum, si_fname,si_realname, location_y, location_x  )
+      VALUES(#{shopname},#{shopaddr},#{shoppn},#{shopcontent},DATE_ADD(now(), INTERVAL '9:30' HOUR_MINUTE) , #{ownernum},#{si_fname}, #{si_realname}, #{location_y}, #{location_x});
+   </insert>
+
+   <!-- 업체 정보 표기 -->
+   <select id='shopSelect' parameterType="OwnerVO" resultType="OwnerVO">
+      SELECT * FROM shopInfo
+         <where>
+            <if test="ownerid != null">
+               ownerid = #{ownerid}
+            </if>
+            <if test="ownerpass != null">
+               AND ownerpass = #{ownerpass}
+            </if>
+         </where>
+   </select>
+   
+   <!-- 로그인한 업자에 대한 업체 정보 표기 -->
+   <select id="getList"  parameterType="OwnerVO" resultType="OwnerVO">
+      <![CDATA[
+         select * from ownerInfo oi ,shopInfo si
+      ]]>   
+         <where>
+         
+            oi.ownerNum = si.ownernum AND oi.ownerNum =#{ownernum}; 
+         </where>
+   </select>
+   
+   
+   
+   
+   <update id="shopUpdate"  parameterType="OwnerVO" >
+   <choose>
+    <when test="si_fname == null">
+       <![CDATA[
+      update shopInfo set shopname =#{shopname}
+               , shopaddr =#{shopaddr}
+               , shoppn =#{shoppn} 
+               , shopcontent =#{shopcontent}
+               , shopupdate= DATE_ADD(now(), INTERVAL '9:30' HOUR_MINUTE) 
+               , location_y=#{location_y}
+               , location_x=#{location_x}
+               where ownernum =#{ownernum}
+      ]]>   
+   </when>
+   
+    <otherwise>   
+    <![CDATA[
+      update shopInfo set shopname =#{shopname}
+               , shopaddr =#{shopaddr}
+               , shoppn =#{shoppn} 
+               , shopcontent =#{shopcontent}
+               , shopupdate= DATE_ADD(now(), INTERVAL '9:30' HOUR_MINUTE) 
+               , si_fname = #{si_fname}
+               , si_realname=#{si_realname}
+               , location_y=#{location_y}
+               , location_x=#{location_x}
+      where ownernum =#{ownernum}
+      ]]>   </otherwise>
+   </choose>
+               
+   </update>
+   
+   
+   <select id="getUserList" resultType="java.util.HashMap"  parameterType="String">
+   <![CDATA[
+      select * from support s ,board_owner bo,ownerInfo oi ,userInfo ui 
+      where bo.ownernum = oi.ownernum       
+      and bo.board_owner_seq = s.board_owner_seq 
+      and ui.userId = s.userid 
+      and oi.ownerId = #{ownerId}
+      ]]>
+   </select>
+</mapper>

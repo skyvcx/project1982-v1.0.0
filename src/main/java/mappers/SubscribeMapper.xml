@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace='subscribePage'>
+
+	<select id="countSubscribeList" resultType="Integer">
+		SELECT count(*) FROM payed_list
+	</select>
+	
+	<select id='getSubscribeList' resultType="com.javassem.domain.SubscribeVO" parameterType="hashmap">
+		SELECT * FROM (SELECT ROW_NUMBER()over(order by pay_date_end desc)as RN, A.* FROM
+		(SELECT * FROM payed_list) A, (SELECT @rownum:=0) r) B
+		where B.RN BETWEEN #{start} and #{end}
+	</select>
+	<select id='TotalList' resultType="com.javassem.domain.SubscribeVO">
+		SELECT * FROM payed_list
+	</select>
+	
+	<select id='type5' resultType="integer">
+		select count(*) from payed_list where coupon_type=5
+	</select>
+	
+	<select id='type4' resultType="integer">
+		select count(*) from payed_list where coupon_type=4
+	</select>
+	
+	<select id='type3' resultType="integer">
+		select count(*) from payed_list where coupon_type=3
+	</select>
+	
+	<select id='type2' resultType="integer">
+		select count(*) from payed_list where coupon_type=2
+	</select>
+	
+	<select id='type1' resultType="integer">
+		select count(*) from payed_list where coupon_type=1
+	</select>
+</mapper>
