@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace='adminboard'>
+
+	<select id='countsupport' resultType='Integer'>
+		select count(*) from support
+	</select>
+
+	<select id='supportList' resultType='com.javassem.domain.admin_storeCloseVO' parameterType='hashmap'>
+		SELECT * FROM (SELECT ROW_NUMBER()over(order by board_owner_seq desc)as RN, A.* FROM
+		(SELECT * FROM support) A, (SELECT @rownum:=0) r) B
+		where B.RN BETWEEN #{start} and #{end};
+	</select>
+	
+	
+	<select id='countboard_owner' resultType='Integer'>
+		select count(*) from board_owner
+	</select>
+
+	<select id='board_ownerList' resultType='com.javassem.domain.admin_positingVO' parameterType='hashmap'>
+		SELECT * FROM (SELECT ROW_NUMBER()over(order by board_owner_seq desc)as RN, A.* FROM
+		(SELECT * FROM board_owner) A, (SELECT @rownum:=0) r) B
+		where B.RN BETWEEN #{start} and #{end};
+	</select>
+	
+	
+	<select id='countshopInfo' resultType='Integer'>
+		select count(*) from shopInfo
+	</select>
+
+	<select id='shopInfoList' resultType='com.javassem.domain.admin_shopInfoVO' parameterType='hashmap'>
+		SELECT * FROM (SELECT ROW_NUMBER()over(order by shopnum desc)as RN, A.* FROM
+		(SELECT * FROM shopInfo) A, (SELECT @rownum:=0) r) B
+		where B.RN BETWEEN #{start} and #{end};
+	</select>
+
+</mapper>

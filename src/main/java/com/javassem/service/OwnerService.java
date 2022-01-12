@@ -26,4 +26,10 @@ public interface OwnerService {
   List<OwnerVO> getList(OwnerVO paramOwnerVO);
   
   List<HashMap> getUserList(String ownerId);
+  
+  List<HashMap> machingList(String ownerId);
+  
+  List<HashMap> endList(String ownerId);
+
+List<OwnerVO> findId(OwnerVO vo);
 }

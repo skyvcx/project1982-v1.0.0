@@ -33,6 +33,13 @@
 		]]>
 	</update>
 	
+	<update id="updateCount" parameterType="BoardVO">
+		UPDATE uploadtemp SET
+		b_count = b_count+1
+		WHERE b_id = #{b_id}
+	</update>
+	
+	
 	<delete id="deleteBoard" parameterType="BoardVO">
 		DELETE FROM uploadtemp
 		WHERE b_id = #{b_id}
@@ -62,12 +69,14 @@
 	 -->
    <select id="getBoardList" resultType="BoardVO"  parameterType="hashmap">
       SELECT * FROM (SELECT @rownum:=@rownum+1 RN, A.* FROM
-      (SELECT * FROM uploadtemp ORDER BY b_id DESC) A, (SELECT @rownum:=0) r) B
+      (SELECT * FROM uploadtemp ORDER BY b_id DESC LIMIT 18446744073709551615) A, (SELECT @rownum:=0) r) B
       where
          <if test="searchCondition != null">
-             B.${searchCondition} LIKE '%${searchKeyword}%' AND
+             B.${searchCondition} LIKE '%${searchKeyword}%'
           </if>
-      B.RN BETWEEN ${start} AND ${end};   
+      <if test="searchCondition == null">
+      B.RN BETWEEN ${start} AND ${end}
+      </if>   
    </select>
       
       <select id="countboard" resultType="int">

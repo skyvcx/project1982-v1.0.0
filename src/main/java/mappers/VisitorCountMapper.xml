@@ -5,11 +5,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="visit">
 
-	<insert id='visit'>
-		insert into visitor (visitDate)
-		values(Date_Format(now(),'%Y-%m-%d'))
-	</insert>
-	
+
 	<select id='countTotal' resultType='Integer'>
 		SELECT COUNT(*) FROM visitor
 	</select>

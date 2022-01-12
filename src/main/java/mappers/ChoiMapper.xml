@@ -7,36 +7,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 매칭성공률 그래프 -->
 	<select id="matching_percent" resultType="com.javassem.domain.GraphVO">
-		SELECT * FROM matchPercent
+		SELECT (select count(*) from support)as whole_apply, 
+		((select count(*) from support where maching="매칭 완료")+(select count(*) from support where maching="종료"))as matching,
+		(((select count(*) from support where maching="매칭 완료")+(select count(*) from support where maching="종료"))/(select count(*) from support)*100)as matching_success
 	</select>
 
 	<!-- 재이용률 그래프 -->
 	<select id="reusePercent" resultType="com.javassem.domain.GraphVO">
-	SELECT * from reusing
+		select (select sum(reusing)as reusing from(select count(DISTINCT userid) as reusing from parttime
+		where userDatetime between DATE_FORMAT(now() - INTERVAL 3 MONTH, '%Y-%m-%d') and DATE_FORMAT(now(),'%Y-%m-%d')
+		group by userid HAVING count(userid)>=2)A)as reusing,(select count(DISTINCT userId) as whole_use from parttime
+		where userDatetime between DATE_FORMAT(now() - INTERVAL 3 MONTH, '%Y-%m-%d') and DATE_FORMAT(now(),'%Y-%m-%d'))as whole_use,
+		(((select sum(reusing)as reusing from(select count(DISTINCT userid) as reusing from parttime
+		where userDatetime between DATE_FORMAT(now() - INTERVAL 3 MONTH, '%Y-%m-%d') and DATE_FORMAT(now(),'%Y-%m-%d')
+		group by userid HAVING count(userid)>=2)A)/(select count(DISTINCT userId) as whole_use from parttime
+		where userDatetime between DATE_FORMAT(now() - INTERVAL 3 MONTH, '%Y-%m-%d') and DATE_FORMAT(now(),'%Y-%m-%d')))*100)as reusing_ratio
 	</select>
 	
 	
 	<!-- 회원현황 그래프 -->
-	<select id="join" resultType="com.javassem.domain.GraphVO">
-		select joinDate from joinTable
-	</select>
-	
 	<select id="joinTotal" resultType="int">
-		select count(*) from joinTable
+		select (select count(*) from userInfo)+(select count(*) from ownerInfo)
 	</select>
 	
 	<select id="joinDate" resultType="com.javassem.domain.GraphVO">
-	select 
-	(select count(joinDate) from joinTable
-	where date_format(joinDate, '%Y-%m-%d') = date_format(now(), '%Y-%m-%d'))as today,
-	(select count(joinDate) from joinTable 
-	where date_format(joinDate, '%Y-%m-%d') = date_format(now()- INTERVAL 1 DAY, '%Y-%m-%d'))as before1,
-	(select count(joinDate) from joinTable 
-	where date_format(joinDate, '%Y-%m-%d') = date_format(now()- INTERVAL 2 DAY, '%Y-%m-%d'))as before2,
-	(select count(joinDate) from joinTable 
-	where date_format(joinDate, '%Y-%m-%d') = date_format(now()- INTERVAL 3 DAY, '%Y-%m-%d'))as before3,
-	(select count(joinDate) from joinTable 
-	where date_format(joinDate, '%Y-%m-%d') = date_format(now()- INTERVAL 4 DAY, '%Y-%m-%d'))as before4
+		select ((select count(*) from userInfo where DATE_FORMAT(userDate,'%Y-%m-%d')= DATE_FORMAT(now(),'%Y-%m-%d'))+
+		(select count(*) from ownerInfo where DATE_FORMAT(ownerDate,'%Y-%m-%d')= DATE_FORMAT(now(),'%Y-%m-%d')))as today,
+		((select count(*) from userInfo where DATE_FORMAT(userDate,'%Y-%m-%d')= DATE_FORMAT(now()-INTERVAL 1 day,'%Y-%m-%d'))+
+		(select count(*) from ownerInfo where DATE_FORMAT(ownerDate,'%Y-%m-%d')= DATE_FORMAT(now(),'%Y-%m-%d')))as before1,
+		((select count(*) from userInfo where DATE_FORMAT(userDate,'%Y-%m-%d')= DATE_FORMAT(now()-INTERVAL 2 day,'%Y-%m-%d'))+
+		(select count(*) from ownerInfo where DATE_FORMAT(ownerDate,'%Y-%m-%d')= DATE_FORMAT(now(),'%Y-%m-%d')))as before2,
+		((select count(*) from userInfo where DATE_FORMAT(userDate,'%Y-%m-%d')= DATE_FORMAT(now()-INTERVAL 3 day,'%Y-%m-%d'))+
+		(select count(*) from ownerInfo where DATE_FORMAT(ownerDate,'%Y-%m-%d')= DATE_FORMAT(now(),'%Y-%m-%d')))as before3,
+		((select count(*) from userInfo where DATE_FORMAT(userDate,'%Y-%m-%d')= DATE_FORMAT(now()-INTERVAL 4 day,'%Y-%m-%d'))+
+		(select count(*) from ownerInfo where DATE_FORMAT(ownerDate,'%Y-%m-%d')= DATE_FORMAT(now(),'%Y-%m-%d')))as before4
 	</select>
 
 </mapper>

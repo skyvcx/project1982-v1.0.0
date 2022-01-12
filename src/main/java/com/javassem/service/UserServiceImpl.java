@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.javassem.dao.UserDAOImpl;
-import com.javassem.domain.ShopVO;
+import com.javassem.domain.ShopInfoVO;
+import com.javassem.domain.SupportVO;
 import com.javassem.domain.UserVO;
 
 @Service("userService")
@@ -24,8 +25,12 @@ public class UserServiceImpl implements UserService {
 	public int userInsert(UserVO vo) {
 	  return this.userDAO.userInsert(vo);
 	}
+	
+	public List<UserVO> findId(UserVO vo){
+		return this.userDAO.findId(vo);
+	}
 	  
-	// 구직자 마이페이지 서비스단
+	// 구직자 이력서 서비스단
 	public void insertUserInfoView(UserVO vo) {
 		this.userDAO.insertUserInfoView(vo);
 	}
@@ -35,7 +40,10 @@ public class UserServiceImpl implements UserService {
 		this.userDAO.updateUserInfoView(vo);
 	}
 	
-
+	public void updateInfoView(UserVO vo) {
+		this.userDAO.updateInfoView(vo);
+	}
+	
 	public void deleteUserInfoView(UserVO vo) {
 		this.userDAO.deleteUserInfoView(vo);
 	}
@@ -45,7 +53,15 @@ public class UserServiceImpl implements UserService {
 		return this.userDAO.getUserInfoView(vo);
 	}
 
-	public List<HashMap> getShopList(HashMap map) {
-		return this.userDAO.getShopList(map);
+	// 구직자 지원현황 서비스단
+	public List<SupportVO> getSupportView(HashMap map) {
+		return this.userDAO.getSupportView(map);
 	}
+
+
+	public ShopInfoVO getShopView(ShopInfoVO vo) {
+		return this.userDAO.getShopView(vo);
+	}
+
+	
 }

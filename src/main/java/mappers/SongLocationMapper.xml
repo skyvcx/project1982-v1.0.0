@@ -5,7 +5,7 @@
 		
 	<select id="getLocationList" parameterType="com.javassem.domain.SongLocationVO" resultType="com.javassem.domain.SongLocationVO" >
 			
-			SELECT I.shopName, I.location_y, I.location_x, b.shoppay, I.si_realname, b.board_owner_seq
+			SELECT I.shopName, I.location_y, I.location_x, b.shoppay, I.si_realname, b.board_owner_seq, I.shoppn
 			FROM board_owner b, shopInfo I
 			<where>
 				b.ownerNum = I.ownerNum
@@ -13,6 +13,7 @@
 					AND ${searchCondition} LIKE '%${searchKeyword}%'
 				</if>
 			</where>
+			order by b.board_owner_seq desc
 	</select> 
 	
 	<select id="getLocationListCount" parameterType="com.javassem.domain.SongLocationVO" resultType="int" >

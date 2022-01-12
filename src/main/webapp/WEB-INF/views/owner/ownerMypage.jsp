@@ -34,7 +34,10 @@
                
                <!-- 오른쪽 메뉴-->
                <div class="right-menu">
-           
+              
+            		<a href="/project1982/owner/job_positing.do" class="search">
+                   구인공고
+      		    	</a>
                    <!--유저 -->
                    <a href="/project1982/owner/ownerMypage.do" id="s2">
                    마이페이지
@@ -55,7 +58,7 @@
         <main>
       
         <form action="shopInsert.do" method='post' enctype="multipart/form-data"> 
-            <ul class="left_nav" id="left_nav1">
+            <ul style="display:none;"class="left_nav" id="left_nav1">
                 <li class="left_nav_text"><a class="home" href="#"></a></li>
                 <li class="left_nav_text"><a href="#">새소식</a></li>
                 <li class="left_nav_text"><a href="#">상품</a></li>
@@ -146,7 +149,7 @@
                     <div class="right_address">
                         <p>
                             <span>주식회사 1982 |</span>
-                            <a href="#">
+                       
                                 <span>대표이사 : 한세호 |</span>
                             </a>
                                 <span>사업자등록번호 : 123-12-12345</span>

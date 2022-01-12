@@ -35,7 +35,10 @@
 	  		<value>com.javassem.domain.BoardVO</value>
 	  		<value>com.javassem.domain.SongLocationVO</value>
 	  		<value>com.javassem.domain.StoreVO</value>
-	  		<value>com.javassem.domain.ShopVO</value>	  		
+	  		<value>com.javassem.domain.SupportVO</value>
+	  		<value>com.javassem.domain.ShopInfoVO</value>  	
+	  		<value>com.javassem.util.PagingVO</value>	
+	  		<value>com.javassem.domain.ShopVO</value>
 	  	</list>
 	  </property>
 	 </bean>
@@ -44,8 +47,7 @@
 	   <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
 	 </bean>
 	 
-
-	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+ <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="smtp.gmail.com" />
         <property name="port" value="587" />
         <property name="username" value="kosmopunch@gmail.com"/>
@@ -57,10 +59,9 @@
                 <prop key="mail.smtp.starttls.enable">true</prop>
                 <prop key="mail.debug">true</prop>
                 <prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
-				<prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
+<prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
             </props>
         </property>
     </bean>
- 
    		
 </beans>

@@ -8,7 +8,8 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.javassem.domain.ShopVO;
+import com.javassem.domain.ShopInfoVO;
+import com.javassem.domain.SupportVO;
 import com.javassem.domain.UserVO;
 
 @Repository("userDAO")
@@ -31,6 +32,10 @@ public class UserDAOImpl implements UserDAO {
     	System.out.println("===> UserMapper idCheck");
     	return (UserVO)this.mybatis.selectOne("user.idCheck", vo);
     }
+    
+    public List<UserVO> findId(UserVO vo){
+    	return this.mybatis.selectList("user.findId", vo);
+    }
   
     public String userDate(UserVO vo) {
     	return (String)this.mybatis.selectOne("sample.getDate", vo);
@@ -52,7 +57,18 @@ public class UserDAOImpl implements UserDAO {
 	    return (UserVO)this.mybatis.selectOne("user.getUserView", vo);
 	}
 
-	public List<HashMap> getShopList(HashMap map) {
-		return this.mybatis.selectList("user.getShopList", map);
+	@Override
+	public List<SupportVO> getSupportView(HashMap map) {
+		return this.mybatis.selectList("user.getSupportView", map);
+	}
+
+	@Override
+	public ShopInfoVO getShopView(ShopInfoVO vo) {
+		return this.mybatis.selectOne("user.getShopView", vo);
+	}
+	
+	@Override
+	public void updateInfoView(UserVO vo) {
+		this.mybatis.update("user.updateInfoView", vo);
 	}
 }

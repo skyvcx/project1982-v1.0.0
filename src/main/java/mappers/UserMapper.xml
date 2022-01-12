@@ -21,24 +21,79 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				<if test="userpass != null">
 					AND userpass = #{userpass}
 				</if>
+				<if test="usermail !=null">
+					AND usermail = #{usermail}
+				</if>
 			</where>
 	</select>
 	<!-- userid=#{userid} AND userpass=#{userpass} -->
+	
+	<select id='findId' resultType="UserVO">
+		SELECT * FROM userInfo
+		WHERE username = #{username}
+		AND userbirth = #{userbirth}
+		AND usermail = #{usermail}
+		AND userpn = #{userpn}
+	</select>
 	
 	
      <update id="updateUserView" parameterType="UserVO">
 		<![CDATA[
 		UPDATE userInfo SET
 		 userimg1 = #{userimg1},
-		 userself = #{userself}
+		 userself = #{userself},
+		 username = #{username},
+		 userpass = #{userpass}
 		WHERE userid = #{userid}
 		]]>
 	</update>
 	
-<!-- 	<delete id="deleteUserView" parameterType="UserVO">
-		DELETE FROM uploadtemp
-		WHERE b_id = #{b_id}
-	</delete> -->
+	<update id="updateInfoView" parameterType="UserVO">
+		<![CDATA[
+		UPDATE userInfo SET
+		 username = #{username},
+		 username2 = #{username2},
+		 userpn = #{userpn},
+		 useraddr = #{useraddr},
+		 usermail = #{usermail},
+		 userbirth = #{userbirth},
+		 userschool = #{userschool},
+		 userschool_date = #{userschool_date},
+		 userschool_subject = #{userschool_subject},
+		 userschool_end = #{userschool_end},
+		 userschool_bigo = #{userschool_bigo},
+		 userschool_date1 = #{userschool_date1},
+		 userschool_subject1 = #{userschool_subject1},
+		 userschool1 = #{userschool1},
+		 userschool_end1 = #{userschool_end1},
+		 userschool_bigo1 = #{userschool_bigo1},
+		 usercareerlist = #{usercareerlist},
+		 careerdate = #{careerdate},
+		 departmentname = #{departmentname},
+		 careerspot = #{careerspot},
+		 careerbigo = #{careerbigo},
+		 careerdate1 = #{careerdate1},
+		 departmentname1 = #{departmentname1},
+		 careerspot1 = #{careerspot1},
+		 usercareerlist1 = #{usercareerlist1},
+		 careerbigo1 = #{careerbigo1},
+		 careerdate2 = #{careerdate2},
+		 departmentname2 = #{departmentname2},
+		 careerspot2 = #{careerspot2},
+		 usercareerlist2 = #{usercareerlist2},
+		 careerbigo2 = #{careerbigo2},
+		 certficatename = #{certficatename},
+		 certficatedate = #{certficatedate},
+		 certficate_company = #{certficate_company},
+		 certficatedate1 = #{certficatedate1},
+		 certficatename1 = #{certficatename1},
+		 certficate_company1 = #{certficate_company1},
+		 certficatedate2 = #{certficatedate2},
+		 certficatename2 = #{certficatename2},
+		 certficate_company2 = #{certficate_company2}
+		 WHERE userid = #{userid}
+		 ]]>
+	</update>
 	
 	<select id="getUserView" resultType="UserVO">
 		<![CDATA[
@@ -48,10 +103,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		]]>
 	</select>
 	
-	<select id="getShopList" resultType="java.util.HashMap"  parameterType="java.util.HashMap">
-	<![CDATA[
-		SELECT * FROM support a, shopInfo b
-		Where a.userid = '${userid}'
-		]]>
+	<select id="getSupportView" resultType="SupportVO" parameterType="hashmap">
+		SELECT * FROM support
+		WHERE
+		  <if test="searchCondition != null">
+           ${searchCondition} LIKE '${searchKeyword}' AND
+          </if>
+        userid = '${userid}'
 	</select>
+	
+	<select id="getShopView" resultType="ShopInfoVO">
+		SELECT * FROM shopInfo
+		WHERE shopname = #{shopname}
+	</select>
+	
 </mapper>

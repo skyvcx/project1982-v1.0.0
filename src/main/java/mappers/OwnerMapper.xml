@@ -8,10 +8,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="owner">
 
+<!-- 아이디, 비밀번호 찾기 -->
+<select id='findId' resultType="OwnerVO"  parameterType="OwnerVO">
+SELECT * FROM ownerInfo
+WHERE ownername = #{ownername}
+AND ownermail = #{ownermail}
+AND ownerpn = #{ownerpn}
+</select>
+
+
    <!-- 업자 회원가입 -->
    <insert id="ownerInsert" parameterType="OwnerVO">
       INSERT INTO ownerInfo(ownerid, ownerpass, ownername, ownerpn, ownermail, ownerdate, ownersub)
-      VALUES(#{ownerid}, #{ownerpass}, #{ownername}, #{ownerpn}, #{ownermail}, DATE_ADD(now(), INTERVAL '9:30' HOUR_MINUTE) ,0)
+      VALUES(#{ownerid}, #{ownerpass}, #{ownername}, #{ownerpn}, #{ownermail}, DATE_ADD(now(), INTERVAL '9:00' HOUR_MINUTE) ,0)
    </insert>
    
    <!-- 로그인시 아이디 체크 -->
@@ -24,13 +33,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="ownerpass != null">
                AND ownerpass = #{ownerpass}
             </if>
+            <if test="ownermail != null">
+            	AND ownermail=#{ownermail}
+            </if>
          </where>
    </select>
 
    <!-- 구인공고 게시판 데이터 삽입 -->
    <insert id="ownerBoardInsert" parameterType="com.javassem.domain.OwnerBoardVO">
       INSERT INTO board_owner(normal_emergency, shopname, shoppay, shopaddr, jobDate, jobTime_start, jobTime_end, need_Num, regDate, ownernum,content,writer)
-      VALUES(#{normal_emergency}, #{shopname}, #{shoppay}, #{shopaddr},#{jobDate}, #{jobTime_start}, #{jobTime_end}, #{need_Num}, DATE_ADD(now(), INTERVAL '9:30' HOUR_MINUTE) , #{ownernum},#{content},1)
+      VALUES(#{normal_emergency}, #{shopname}, #{shoppay}, #{shopaddr},#{jobDate}, #{jobTime_start}, #{jobTime_end}, #{need_Num}, DATE_ADD(now(), INTERVAL '9:00' HOUR_MINUTE) , #{ownernum},#{content},1)
    </insert>
 
    <!-- 구인공고 게시판 리스트 표기 -->
@@ -46,15 +58,74 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    </select>
    
    <!-- 공고 취소 누를 때 취소 됨 writer = 0 -->
-	<update id="ownerBoardCancel" parameterType="Integer">
-		update board_owner set writer = 0
-		where board_owner_seq = #{board_seq}
-	</update>
+   <update id="ownerBoardCancel" parameterType="Integer">
+      update board_owner set writer = 0
+      where board_owner_seq = #{board_seq}
+   </update>
 
+   <!-- 고용 버튼 클릭시 maching = 매칭완료  -->
+   
+   <update id="ownerAccept" parameterType="hashmap">
+      update support set maching = "매칭 완료"
+      where board_owner_seq = #{info_board_seq}
+      and userid = #{info_userId}
+   </update>
+   
+   <!-- 거절버튼 클릭시 maching = 거절 -->
+   <update id="ownerSorry" parameterType="hashmap">
+      update support set maching = "거절"
+      where board_owner_seq = #{info_board_seq}
+      and userid = #{info_userId}
+   </update>
+   
+   <!-- 업무종료시 완료  -->
+   <update id="ownerEnd" parameterType="hashmap">
+      update support set maching = "종료"
+      where board_owner_seq = #{info_board_seq}
+      and userid = #{info_userId}
+   </update>
+   
+   <!-- 사업자측 블랙리스트 추가 -->
+   <insert id="black" parameterType="hashmap">
+   
+      insert into blacklist(warnCnt,userName,userId,userNum,ownerNum,reason,warnDate)
+      Values(1,#{userName},#{userId},#{userNum},#{ownerNum},#{reason},DATE_ADD(now(), INTERVAL '9:00' HOUR_MINUTE))
+   </insert>
+   
+   <insert id="black2" parameterType="hashmap">
+         insert into blacklist
+      select  DISTINCT (select max(warnCnt)+1 from blacklist where userId=#{userId})as warnCnt, userId, warnDate, userNum, ownerNum, reason, 
+        accountStop, userName, block from blacklist where userId=#{userId}
+   </insert>
+    
+    
+    <select id="blackCnt" parameterType="hashmap" resultType="hashmap">
+       select max(warnCnt) from blacklist
+       where ownerNum=#{ownerNum}
+       and userNum=#{userNum}
+    </select>
+
+   <select id="blackList" parameterType="hashmap" resultType="hashmap">
+       select * from blacklist
+       where ownerNum=#{ownerNum}
+       		and userNum = #{userNum}
+       		and warnCnt = (select max(b.warnCnt) from blacklist b
+       where b.ownerNum= #{ownerNum}
+       		and b.userNum = #{userNum})
+    
+    </select>
+   
+	 <select id="blackList2" parameterType="hashmap" resultType="hashmap">
+       select * from blacklist
+       where ownerNum=#{ownerNum}
+       	
+
+    </select>
    <!-- 업체 정보 추가 -->
+     
    <insert id="shopInsert" parameterType="OwnerVO">
       INSERT INTO shopInfo(shopname, shopaddr, shoppn, shopcontent, shopdate, ownernum, si_fname,si_realname, location_y, location_x  )
-      VALUES(#{shopname},#{shopaddr},#{shoppn},#{shopcontent},DATE_ADD(now(), INTERVAL '9:30' HOUR_MINUTE) , #{ownernum},#{si_fname}, #{si_realname}, #{location_y}, #{location_x});
+      VALUES(#{shopname},#{shopaddr},#{shoppn},#{shopcontent},DATE_ADD(now(), INTERVAL '9:00' HOUR_MINUTE) , #{ownernum},#{si_fname}, #{si_realname}, #{location_y}, #{location_x});
    </insert>
 
    <!-- 업체 정보 표기 -->
@@ -86,26 +157,50 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    <update id="shopUpdate"  parameterType="OwnerVO" >
    <choose>
-    <when test="si_fname == null">
-       <![CDATA[
-      update shopInfo set shopname =#{shopname}
-               , shopaddr =#{shopaddr}
-               , shoppn =#{shoppn} 
-               , shopcontent =#{shopcontent}
-               , shopupdate= DATE_ADD(now(), INTERVAL '9:30' HOUR_MINUTE) 
-               , location_y=#{location_y}
-               , location_x=#{location_x}
-               where ownernum =#{ownernum}
-      ]]>   
-   </when>
+	    <when test="si_fname == null and (location_y == null or location_y == '') and (location_x == null or location_x == '')">
+	       <![CDATA[
+	      update shopInfo set shopname =#{shopname}
+	               , shopaddr =#{shopaddr}
+	               , shoppn =#{shoppn} 
+	               , shopcontent =#{shopcontent}
+	               , shopupdate= DATE_ADD(now(), INTERVAL '9:00' HOUR_MINUTE) 
+	               where ownernum =#{ownernum}
+	      ]]>   
+	   </when>
    
+	   <when test="si_fname != null and (location_y == null or location_y == '') and (location_x == null or location_x == '')">
+	       <![CDATA[
+	      update shopInfo set shopname =#{shopname}
+	               , shopaddr =#{shopaddr}
+	               , shoppn =#{shoppn} 
+	               , shopcontent =#{shopcontent}
+	               , shopupdate= DATE_ADD(now(), INTERVAL '9:00' HOUR_MINUTE) 
+	               , si_fname = #{si_fname}
+	               , si_realname=#{si_realname}
+	               where ownernum =#{ownernum}
+	      ]]>   
+	   </when>
+		   	
+   
+	   <when test="si_fname ==  null and (location_y !=  null and location_y != '') and (location_x !=  null and location_x != '')">
+	       <![CDATA[
+	      update shopInfo set shopname =#{shopname}
+	               , shopaddr =#{shopaddr}
+	               , shoppn =#{shoppn} 
+	               , shopcontent =#{shopcontent}
+	               , shopupdate= DATE_ADD(now(), INTERVAL '9:00' HOUR_MINUTE) 
+	               , location_y=#{location_y}
+	               , location_x=#{location_x}
+	               where ownernum =#{ownernum}
+	      ]]>   
+	   </when>
     <otherwise>   
     <![CDATA[
       update shopInfo set shopname =#{shopname}
                , shopaddr =#{shopaddr}
                , shoppn =#{shoppn} 
                , shopcontent =#{shopcontent}
-               , shopupdate= DATE_ADD(now(), INTERVAL '9:30' HOUR_MINUTE) 
+               , shopupdate= DATE_ADD(now(), INTERVAL '9:00' HOUR_MINUTE) 
                , si_fname = #{si_fname}
                , si_realname=#{si_realname}
                , location_y=#{location_y}
@@ -123,7 +218,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       where bo.ownernum = oi.ownernum       
       and bo.board_owner_seq = s.board_owner_seq 
       and ui.userId = s.userid 
+      and s.maching ="대기 중"
       and oi.ownerId = #{ownerId}
       ]]>
    </select>
+   
+   <!-- 매칭완료된 경우 사업자측에서 출근현황으로 보이는 리스트 -->
+   <select id="machingList" resultType="java.util.HashMap"  parameterType="String">
+   <![CDATA[
+      select * from support s ,board_owner bo,ownerInfo oi ,userInfo ui 
+      where bo.ownernum = oi.ownernum       
+      and bo.board_owner_seq = s.board_owner_seq 
+      and ui.userId = s.userid 
+      and s.maching ="매칭 완료"
+      and oi.ownerId = #{ownerId}
+      ]]>
+   </select>
+   
+   
+    <select id="endList" resultType="java.util.HashMap"  parameterType="String">
+   <![CDATA[
+      select * from support s ,board_owner bo,ownerInfo oi ,userInfo ui 
+      where bo.ownernum = oi.ownernum       
+      and bo.board_owner_seq = s.board_owner_seq 
+      and ui.userId = s.userid 
+      and s.maching ="종료"
+      and oi.ownerId = #{ownerId}
+      ]]>
+   </select>
+   
 </mapper>

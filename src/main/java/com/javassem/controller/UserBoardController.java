@@ -13,7 +13,10 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,12 +43,11 @@ public class UserBoardController {
 	  
   }
   
-  @RequestMapping({"/user/saveBoard.do"})
-  public String insertBoard(BoardVO vo) throws IOException {
-    System.out.println(vo);
-    System.out.println(vo.getB_name());
+  @PostMapping({"/user/saveBoard.do"})
+  public String insertBoard(BoardVO vo, Model m){
     this.boardService.insertBoard(vo);
-    return "redirect:userBoard.do";
+    m.addAttribute("msg", "글 등록이 완료되었습니다");
+    return "user/saveOK";
   }
   
   
@@ -76,22 +78,22 @@ public class UserBoardController {
   
   @RequestMapping({"/user/getBoard.do"})
   public void getBoard(BoardVO vo,  HttpServletRequest request, Model m) {
-    BoardVO result = this.boardService.getBoard(vo);
+	this.boardService.updatecount(vo);
+
+	BoardVO result = this.boardService.getBoard(vo);
 	HttpSession session = request.getSession();
     m.addAttribute("userId",session.getAttribute("userId"));
     m.addAttribute("userPass",session.getAttribute("userPass"));
     m.addAttribute("board", result);
   }
   
-  @RequestMapping({"/user/deleteBoard.do"})
-  public String delectBoard(BoardVO vo) {
+  @DeleteMapping({"/user/deleteBoard.do"})
+  public void delectBoard(BoardVO vo) {
     this.boardService.deleteBoard(vo);
-    return "redirect:userBoard.do";
   }
   
   @RequestMapping({"/user/updateBoard.do"})
-  public String updateBoard(BoardVO vo) {
+  public void updateBoard(BoardVO vo) {
     this.boardService.updateBoard(vo);
-    return "redirect:userBoard.do";
   }
 }

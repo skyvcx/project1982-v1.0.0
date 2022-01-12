@@ -29,7 +29,7 @@
 #boardcss_list_add_button_table .boardcss_list_add_button ul { width: 100%; overflow: hidden; height: 10px;}
 
 /* boardcss_list 에서 사용하는 글 목록 테이블 크기*/
-.boardcss_list_table { width: 100%; }
+.boardcss_list_table { width: 80%; }
 
 /* 화면에 보여지는 글 목록 테이블 */
 .list_table { width: 100%; }
@@ -50,8 +50,8 @@
  <% 
 	String ownerid = (String)session.getAttribute("ownerid");
 	int ownernum = (int)session.getAttribute("ownernum");
-	out.println(ownerid + " 님 환영합니다.");
-	out.println(ownernum + " 님 환영합니다.");
+	//out.println(ownerid + " 님 환영합니다.");
+	//out.println(ownernum + " 님 환영합니다.");
 	
 %>
 
@@ -77,7 +77,7 @@
                    마이페이지
                    </a>
                    <!--카트  -->
-                   <a href="/project1982/board.do">
+                   <a href="/project1982/owner/ownerBoard.do">
                    고객센터
                        <!--카트 상품-->
                        
@@ -91,7 +91,7 @@
 
         <!-- 메인 ---------------------------------------------------------------->
         <main>
-            <ul class="left_nav">
+            <ul style="display:none;" class="left_nav">
                 <li class="left_nav_text"><a class="home" href="#"></a></li>
                 <li class="left_nav_text"><a href="#" class="home">프로필 수정</a></li>
                 <li class="left_nav_text"><a href="#" class="home">업체지원현황</a></li>
@@ -139,9 +139,8 @@
                             <div class="main_font">필요인원 :
                                 <input class="input_box" type="text" name="need_Num" placeholder=" 내용을 입력해주세요">
                             </div>
-                            <div class="main_font">상세내용 :
-
-                                <textarea name="content" id="" cols="30" rows="10" style="resize:none;"></textarea>
+                            <div class="main_font">업무내용 :
+                                <input class = "input_box" name="content" id="content" placeholder="업무를 입력해주세요">
                             </div>
                             
                             <div class="hide">
@@ -252,7 +251,7 @@
                     <div class="right_address">
                         <p>
                             <span>주식회사 1982 |</span>
-                            <a href="#">
+                           
 
                                 <span>대표이사 : 한세호 |</span>
                             </a>

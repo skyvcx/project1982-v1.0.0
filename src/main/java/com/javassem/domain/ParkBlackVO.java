@@ -2,49 +2,57 @@ package com.javassem.domain;
 
 public class ParkBlackVO {
 	
-  private String userID;
+  private String userId;
   private String reason;
-  private String userPN;
+  private String warnDate;
   private String userName;
   private int warnCnt;
+  private String userNum;
+  private String ownerNum;
   
-public int getWarnCnt() {
-    return this.warnCnt;
-  }
   
-  public void setWarnCnt(int warnCnt) {
-    this.warnCnt = warnCnt;
-  }
-  
-  public String getReason() {
-    return this.reason;
-  }
-  
-  public void setReason(String reason) {
-    this.reason = reason;
-  }
-  
-  public String getUserPN() {
-    return this.userPN;
-  }
-  
-  public void setUserPN(String userPN) {
-    this.userPN = userPN;
-  }
-  
-  public String getUserName() {
-    return this.userName;
-  }
-  
-  public void setUserName(String userName) {
-    this.userName = userName;
-  }
-  
-  public String getUserID() {
-    return this.userID;
-  }
-  
-  public void setUserID(String userID) {
-    this.userID = userID;
-  }
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	public String getReason() {
+		return reason;
+	}
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+	public String getWarnDate() {
+		return warnDate;
+	}
+	public void setWarnDate(String warnDate) {
+		this.warnDate = warnDate;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public int getWarnCnt() {
+		return warnCnt;
+	}
+	public void setWarnCnt(int warnCnt) {
+		this.warnCnt = warnCnt;
+	}
+	public String getUserNum() {
+		return userNum;
+	}
+	public void setUserNum(String userNum) {
+		this.userNum = userNum;
+	}
+	public String getOwnerNum() {
+		return ownerNum;
+	}
+	public void setOwnerNum(String ownerNum) {
+		this.ownerNum = ownerNum;
+	}
+
+
 }

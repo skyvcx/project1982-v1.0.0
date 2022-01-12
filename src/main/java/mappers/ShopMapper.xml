@@ -5,51 +5,56 @@
 <mapper namespace="ShopDAO">
 
 <select id="ShopList" resultType="com.javassem.domain.ShopVO"  parameterType="com.javassem.domain.ShopVO">
-		
-			select * From shopInfo si ,board_owner bo 
-			where si.ownernum = bo.ownernum ;
+      
+         select * From shopInfo si ,board_owner bo 
+         where si.ownernum = bo.ownernum ;
 </select>
 
 <select id="ShopList1" resultType="com.javassem.domain.ShopVO"  parameterType="com.javassem.domain.ShopVO">
-		
-			select * From shopInfo 
-			where ownernum = #{ownernum}  ;
-</select>
-	
-
-	<select id="getShopList" resultType="com.javassem.domain.ShopVO"  parameterType="hashmap">
-		
-		SELECT *
-		FROM board_owner
-		<where>
-			<if test="searchCondition != null">
-				${searchCondition} LIKE '%${searchKeyword}%'
-			</if>
-		</where>		
-	</select> 
-	
-	<select id = "getShop" resultType="com.javassem.domain.ShopVO">
-	<![CDATA[
-		SELECT *
-		FROM board_owner bo, shopInfo si
-		WHERE bo.ownernum = si.ownernum
-		AND bo.board_owner_seq = #{board_owner_seq}
-		]]>
-	
-	</select>
-	
-	
-  	 <insert id="getShop2" parameterType="com.javassem.domain.ShopVO">
-		INSERT INTO support (shopname, normal_emergency, shopaddr, shoppay, jobDate, jobTime_start, jobTime_end, board_owner_seq, userid, shoppn,maching)
-		VALUES (#{shopname}, #{normal_emergency}, #{shopaddr}, #{shoppay}, #{jobDate}, #{jobTime_start}, #{jobTime_end}, #{board_owner_seq}, #{userid}, ${shoppn},"대기 중")
-	</insert> 
-	
-	<select id="getSupport" parameterType="com.javassem.domain.ShopVO" resultType="com.javassem.domain.ShopVO" >
-		<![CDATA[
-			SELECT * FROM support where board_owner_seq = #{board_owner_seq} AND userid = #{userid}
-		]]>
+      
+         select * From shopInfo 
+         where ownernum = #{ownernum}  ;
 </select>
 
-	
-	</mapper>
+   
+   <select id = "getShop" resultType="com.javassem.domain.ShopVO">
+   <![CDATA[
+      SELECT *
+      FROM board_owner bo, shopInfo si
+      WHERE bo.ownernum = si.ownernum
+      AND bo.board_owner_seq = #{board_owner_seq}
+      ]]>
+   
+   </select>
+   
+   
+      <insert id="getShop2" parameterType="com.javassem.domain.ShopVO">
+      INSERT INTO support (shopname, normal_emergency, shopaddr, shoppay, jobDate, jobTime_start, jobTime_end, board_owner_seq, userid, shoppn,maching,content)
+      VALUES (#{shopname}, #{normal_emergency}, #{shopaddr}, #{shoppay}, #{jobDate}, #{jobTime_start}, #{jobTime_end}, #{board_owner_seq}, #{userid}, ${shoppn},"대기 중", #{content})
+   </insert> 
+   
+   <select id="getSupport" parameterType="com.javassem.domain.ShopVO" resultType="com.javassem.domain.ShopVO" >
+      <![CDATA[
+         SELECT * FROM support where board_owner_seq = #{board_owner_seq} AND userid = #{userid}
+      ]]>
+    </select>
+   
+   <select id = "countStore" resultType="int">
+      SELECT COUNT(*) FROM board_owner;
+   </select>
+   
+   
+      <select id="getShopList" resultType="ShopVO"  parameterType="hashmap">
+      SELECT * FROM (SELECT @rownum:=@rownum+1 RN, A.* FROM
+      (SELECT * FROM board_owner ORDER BY board_owner_seq DESC LIMIT 18446744073709551615) A, (SELECT @rownum:=0) r) B
+      where
+         <if test="searchCondition != null">
+             B.${searchCondition} LIKE '%${searchKeyword}%'
+          </if>
+           <if test="searchCondition == null">
+              B.RN BETWEEN ${start} AND ${end}
+          </if>
+   
+   </select>
+   </mapper>
 

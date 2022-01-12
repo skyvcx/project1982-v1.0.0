@@ -4,7 +4,8 @@ package com.javassem.service;
 import java.util.HashMap;
 import java.util.List;
 
-import com.javassem.domain.ShopVO;
+import com.javassem.domain.ShopInfoVO;
+import com.javassem.domain.SupportVO;
 import com.javassem.domain.UserVO;
 
 public interface UserService {
@@ -14,14 +15,20 @@ public interface UserService {
   
   int userInsert(UserVO paramUserVO);
   
+  List<UserVO> findId(UserVO paramUserVO);
+  
   // 구직자 마이페이지 서비스
   void insertUserInfoView(UserVO paramUserVO);
   
   void updateUserInfoView(UserVO paramUserVO);
   
+  void updateInfoView(UserVO paramUserVO);
+
   void deleteUserInfoView(UserVO paramUserVO);
   
   UserVO getUserInfoView(UserVO paramUserVO);
   
-  List<HashMap> getShopList(HashMap paramHashMap);
+  List<SupportVO> getSupportView(HashMap map);
+  
+  ShopInfoVO getShopView(ShopInfoVO paramShopInfoVO);
 }

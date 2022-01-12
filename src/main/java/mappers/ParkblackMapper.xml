@@ -9,21 +9,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<select id="getBlackList" resultType="com.javassem.domain.ParkBlackVO" parameterType="hashmap">
-		SELECT * FROM (SELECT ROW_NUMBER()over(order by warn_date desc)as RN, A.* FROM
+		SELECT * FROM (SELECT ROW_NUMBER()over(order by warnDate desc)as RN, A.* FROM
 		(SELECT * FROM blacklist) A, (SELECT @rownum:=0) r) B
 		where B.RN BETWEEN #{start} and #{end};
 	</select>
 
 	<select id='checkCnt' resultType="Integer" parameterType="com.javassem.domain.ParkBlackVO">
-		SELECT max(WarnCnt)as WarnCnt
-		FROM (SELECT * FROM blacklist WHERE userID=#{userID})A
+		SELECT max(warnCnt)as warnCnt
+		FROM (SELECT * FROM blacklist WHERE userId=#{userId})A
 	</select>
 	<insert id='stopaccount' parameterType="hashmap">
-		insert into blacklist (WarnCnt, userID, userName, Warn_date, reason, userPN, accountStop)
-		values(3,#{userID},#{userName},now(),'운영자 조치',#{userPN},1)
+		insert into blacklist (warnCnt, userId, userName, warnDate, reason, accountStop, userNum, ownerNum)
+		values(3,#{userId},#{userName},now(),'운영자 조치',1,#{userNum},#{ownerNum})
 	</insert>
 	<select id='division' parameterType="com.javassem.domain.ParkBlackVO">
 		SELECT Max(accountStop)as accountStop FROM blacklist
-		where userID=#{userID}
+		where userId=#{userId}
 	</select>
 </mapper>
